@@ -1,6 +1,6 @@
 # linkin-back
 
-[![Build Status](https://travis-ci.org/acuatoria/linkin-back.svg?branch=master)](https://travis-ci.org/acuatoria/linkin-back)
+[![Build Status](https://travis-ci.org/acuatoria/linkin-back.svg?branch=main)](https://travis-ci.org/acuatoria/linkin-back)
 [![Built with](https://img.shields.io/badge/Built_with-Cookiecutter_Django_Rest-F7B633.svg)](https://github.com/agconti/cookiecutter-django-rest)
 
 about links. Check out the project's [documentation](http://acuatoria.github.io/linkin-back/).
