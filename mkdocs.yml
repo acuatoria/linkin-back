@@ -1,0 +1,12 @@
+site_name: linkin
+site_description: about links
+repo_url: https://github.com/acuatoria/linkin-back
+site_dir: site
+copyright: Copyright &copy; 2020, <a href="https://github.com/acuatoria">acuatoria</a>.
+dev_addr: 0.0.0.0:8001
+
+nav:
+  - Home: 'index.md'
+  - API:
+    - Authentication: 'api/authentication.md'
+    - Users: 'api/users.md'
