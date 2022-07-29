@@ -9,7 +9,8 @@ from ..serializers import CreateUserSerializer
 class TestCreateUserSerializer(TestCase):
 
     def setUp(self):
-        self.user_data = model_to_dict(UserFactory.build())
+        self.user = UserFactory.build()
+        self.user_data = model_to_dict(self.user)
 
     def test_serializer_with_empty_data(self):
         serializer = CreateUserSerializer(data={})
@@ -18,6 +19,7 @@ class TestCreateUserSerializer(TestCase):
     def test_serializer_with_valid_data(self):
         serializer = CreateUserSerializer(data=self.user_data)
         ok_(serializer.is_valid())
+        eq_(str(self.user), serializer.data.get('username'))
 
     def test_serializer_hashes_password(self):
         serializer = CreateUserSerializer(data=self.user_data)
