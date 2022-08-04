@@ -4,6 +4,8 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/acuatoria/linkin-back/Django%20CI?style=flat-square)
 ![Scrutinizer coverage (GitHub/BitBucket)](https://img.shields.io/scrutinizer/coverage/g/acuatoria/linkin-back)
 
+It's about links...
+
 # Prerequisites
 
 - [Docker](https://docs.docker.com/docker-for-mac/install/)  
@@ -13,10 +15,4 @@
 Start the dev server for local development:
 ```bash
 docker-compose up
-```
-
-Run a command inside the docker container:
-
-```bash
-docker-compose run --rm web [command]
 ```

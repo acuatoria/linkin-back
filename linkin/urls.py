@@ -5,11 +5,18 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
+
 from .users.views import UserViewSet, UserCreateViewSet
+from .comments.views import CommentViewSet, CommentUrlViewSet
+from linkin.url.views import UrlViewSet, UrlUserCreateViewSet
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'users', UserCreateViewSet)
+router.register(r'comments', CommentViewSet, basename="comments")
+router.register(r'url-comments', CommentUrlViewSet)
+router.register(r'urls', UrlViewSet)
+router.register(r'url-user', UrlUserCreateViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
