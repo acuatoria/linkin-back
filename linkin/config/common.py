@@ -1,7 +1,7 @@
 import os
+import dj_database_url
 from os.path import join
 from distutils.util import strtobool
-import dj_database_url
 from configurations import Configuration
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
