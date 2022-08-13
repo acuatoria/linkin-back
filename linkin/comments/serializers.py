@@ -6,7 +6,7 @@ from linkin.url.models import Url
 
 class CommentSerializer(serializers.ModelSerializer):
 
-    url = serializers.PrimaryKeyRelatedField(queryset=Url.objects.all(),)
+    url = serializers.PrimaryKeyRelatedField(queryset=Url.objects.all())
 
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()

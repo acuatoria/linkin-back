@@ -10,6 +10,9 @@ from linkin.common.model_permissions import ModelPermissions
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 
 class Url(models.Model):
 
