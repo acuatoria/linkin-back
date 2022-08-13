@@ -7,23 +7,8 @@ from django.contrib.postgres.fields import ArrayField
 from linkin.common.model_permissions import ModelPermissions
 
 
-CATEGORIES = (
-    ('Social networks and online communities', 'Social networks and online communities'),
-    ('News and media', 'News and media'),
-    ('Search engines', 'Search engines'),
-    ('Marketplace', 'Marketplace'),
-    ('Adult', 'Adult'),
-    ('Programming and developer software', 'Programming and developer software'),
-    ('TV movies and streaming', 'TV movies and streaming'),
-    ('Email', 'Email'),
-    ('Blog', 'Blog'),
-    ('Forum or wiki', 'Forum or wiki'),
-    ('Business website', 'Business website'),
-    ('Portfolio', 'Portfolio'),
-    ('Crowdfunding', 'Crowdfunding'),
-    ('Magazine', 'Magazine'),
-    ('Educational', 'Educational'),
-)
+class Category(models.Model):
+    name = models.CharField(max_length=100)
 
 
 class Url(models.Model):
@@ -34,15 +19,17 @@ class Url(models.Model):
         editable=False
     )
 
-    # This field must be calculated based on categories of url user
-    category = models.CharField(
-        blank=True, null=True,
-        max_length=200,
-        verbose_name=_('Url category'),
-        choices=CATEGORIES
+    # This field should be calculated based on categories of url user
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True, blank=True
     )
 
     show_on_front = models.BooleanField(default=False)
+
+    # this field will be filled automatically
+    title = models.TextField(null=True, blank=True)
 
     url = models.URLField(unique=True)
 
@@ -73,11 +60,10 @@ class UrlUser(ModelPermissions):
         null=True, blank=True
     )
 
-    category = models.CharField(
-        blank=True, null=True,
-        max_length=200,
-        verbose_name=_('Url category'),
-        choices=CATEGORIES
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True, blank=True
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
