@@ -33,7 +33,7 @@ class Production(Common):
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': os.getenv('REDIS_LOCATION'),
+            'LOCATION': os.getenv('REDIS_URL'),
         }
     }
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
