@@ -30,3 +30,10 @@ class Production(Common):
     AWS_HEADERS = {
         'Cache-Control': 'max-age=86400, s-maxage=86400, must-revalidate',
     }
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': os.getenv('REDIS_LOCATION'),
+        }
+    }
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
