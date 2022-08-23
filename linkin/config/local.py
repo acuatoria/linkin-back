@@ -15,7 +15,8 @@ class Local(Common):
         '-s',
         '--nologcapture',
         '--with-coverage',
-        '--cover-package=linkin'
+        '--cover-package=linkin',
+        '--cover-html'
     ]
 
     # Mail

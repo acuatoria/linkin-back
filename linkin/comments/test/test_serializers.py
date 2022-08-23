@@ -5,7 +5,7 @@ from .factories import CommentFactory
 from ..serializers import CommentSerializer
 
 
-class TestCreateCommentSerializer(TestCase):
+class TestCommentSerializer(TestCase):
 
     def setUp(self):
         self.comment = CommentFactory.build()
@@ -26,7 +26,11 @@ class TestCreateCommentSerializer(TestCase):
         )
         self.comment.url.save()
         ok_(serializer.is_valid())
+        eq_(self.comment.comment, serializer.data.get('comment'))
 
+    def test_serializer_data(self):
+        request = self.client.request()
+        request.user = self.comment.user
         url = self.comment.url
         user = self.comment.user
         eq_(str(self.comment), f'{url} - {user}')
