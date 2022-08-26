@@ -22,6 +22,7 @@ class Common(Configuration):
         'rest_framework.authtoken',  # token authentication
         'django_filters',            # for filtering rest endpoints
         'django_extensions',
+        'corsheaders',
 
         # Your apps
         'linkin.users',
@@ -32,6 +33,7 @@ class Common(Configuration):
 
     # https://docs.djangoproject.com/en/2.0/topics/http/middleware/
     MIDDLEWARE = (
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.security.SecurityMiddleware',
         'whitenoise.middleware.WhiteNoiseMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
@@ -214,3 +216,5 @@ class Common(Configuration):
     }
 
     DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+    CORS_ORIGIN_ALLOW_ALL = True
