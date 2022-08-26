@@ -29,4 +29,4 @@ class Production(Common):
     }
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
-    CSRF_TRUSTED_ORIGINS = ['https://' + x for x in os.getenv('ALLOWED_HOSTS').split(',')]
+    CSRF_TRUSTED_ORIGINS = ['https://' + x for x in os.getenv('ALLOWED_HOSTS', '').split(',')]
