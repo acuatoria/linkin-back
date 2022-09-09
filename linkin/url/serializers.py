@@ -1,5 +1,8 @@
 from rest_framework import serializers
 
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
+
 from .models import Url, UrlUser
 
 
@@ -30,8 +33,11 @@ class UrlUserSerializer(serializers.ModelSerializer):
         """
         Check that url is valid
         """
-        if not UrlSerializer(data={'url': value}).is_valid():
+        try:
+            URLValidator(value)
+        except ValidationError:
             raise serializers.ValidationError("Url is not valid")
+
         return value
 
     class Meta:
