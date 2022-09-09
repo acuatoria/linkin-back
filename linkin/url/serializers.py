@@ -34,7 +34,8 @@ class UrlUserSerializer(serializers.ModelSerializer):
         Check that url is valid
         """
         try:
-            URLValidator(value)
+            validator = URLValidator()
+            validator(value)
         except ValidationError:
             raise serializers.ValidationError("Url is not valid")
 
