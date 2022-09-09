@@ -26,6 +26,14 @@ class UrlUserSerializer(serializers.ModelSerializer):
     def get_username(self, obj):
         return obj.user.username
 
+    def validate_url_string(self, value):
+        """
+        Check that url is valid
+        """
+        if not UrlSerializer(data={'url': value}).is_valid():
+            raise serializers.ValidationError("Url is not valid")
+        return value
+
     class Meta:
         model = UrlUser
         fields = ('id', 'description', 'user', 'url', 'url_string', 'username', 'category')
