@@ -53,6 +53,6 @@ class CategoryViewSet(mixins.RetrieveModelMixin,
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
 
-    @method_decorator(cache_page(60))
+    @method_decorator(cache_page(1))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

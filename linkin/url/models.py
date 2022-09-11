@@ -7,6 +7,9 @@ from django.contrib.postgres.fields import ArrayField
 from linkin.common.model_permissions import ModelPermissions
 
 
+MAX_URL_SIZE = 2048
+
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
@@ -34,7 +37,7 @@ class Url(models.Model):
     # this field will be filled automatically
     title = models.TextField(null=True, blank=True)
 
-    url = models.URLField(unique=True)
+    url = models.URLField(unique=True, max_length=MAX_URL_SIZE)
 
     def __str__(self):
         return f'{self.url}'

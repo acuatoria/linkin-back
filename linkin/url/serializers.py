@@ -1,10 +1,9 @@
-from unicodedata import category
 from rest_framework import serializers
 
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
-from .models import Url, UrlUser, Category
+from .models import Url, UrlUser, Category, MAX_URL_SIZE
 
 
 class UrlSerializer(serializers.ModelSerializer):
@@ -26,7 +25,7 @@ class UrlUserSerializer(serializers.ModelSerializer):
     url_string = serializers.CharField(write_only=True)
 
     username = serializers.SerializerMethodField()
-    
+
     def get_username(self, obj):
         return obj.user.username
 
@@ -34,6 +33,8 @@ class UrlUserSerializer(serializers.ModelSerializer):
         """
         Check for valid url
         """
+        if len(value) > MAX_URL_SIZE:
+            raise serializers.ValidationError("Url too long")
         try:
             validator = URLValidator()
             validator(value)
