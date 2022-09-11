@@ -1,9 +1,10 @@
+from unicodedata import category
 from rest_framework import serializers
 
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
-from .models import Url, UrlUser
+from .models import Url, UrlUser, Category
 
 
 class UrlSerializer(serializers.ModelSerializer):
@@ -25,13 +26,13 @@ class UrlUserSerializer(serializers.ModelSerializer):
     url_string = serializers.CharField(write_only=True)
 
     username = serializers.SerializerMethodField()
-
+    
     def get_username(self, obj):
         return obj.user.username
 
     def validate_url_string(self, value):
         """
-        Check that url is valid
+        Check for valid url
         """
         try:
             validator = URLValidator()
@@ -40,6 +41,15 @@ class UrlUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Url is not valid")
 
         return value
+
+    def validate_category(self, value):
+        """
+        Check for valid category
+        """
+        if Category.objects.filter(id=value.id).exists():
+            return value
+
+        raise serializers.ValidationError("Category is not valid")
 
     class Meta:
         model = UrlUser
@@ -53,3 +63,11 @@ class UrlUserSerializer(serializers.ModelSerializer):
             url=url_object,
             defaults={**validated_data})
         return url_user
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
+        fields = ('id', 'name')
+        read_only_fields = ('id', 'name')
