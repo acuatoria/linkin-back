@@ -47,6 +47,9 @@ class UrlUserSerializer(serializers.ModelSerializer):
         """
         Check for valid category
         """
+        if not value:
+            return None
+
         if Category.objects.filter(id=value.id).exists():
             return value
 
@@ -64,6 +67,15 @@ class UrlUserSerializer(serializers.ModelSerializer):
             url=url_object,
             defaults={**validated_data})
         return url_user
+
+    def update(self, instance, validated_data):
+        url_string = validated_data.pop('url_string')
+        url_object, _ = Url.objects.get_or_create(url=url_string)
+        instance.url = url_object
+        instance.description = validated_data.pop('description')
+        instance.category_id = validated_data.pop('category')
+        instance.save()
+        return instance
 
 
 class CategorySerializer(serializers.ModelSerializer):

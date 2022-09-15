@@ -1,7 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from linkin.url.models import Url, UrlUser, Category
@@ -27,6 +27,7 @@ class UrlViewSet(mixins.RetrieveModelMixin,
 
 class UrlUserCreateViewSet(mixins.CreateModelMixin,
                            viewsets.GenericViewSet,
+                           generics.UpdateAPIView,
                            mixins.RetrieveModelMixin,
                            mixins.UpdateModelMixin,
                            mixins.DestroyModelMixin,
