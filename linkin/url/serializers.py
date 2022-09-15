@@ -71,11 +71,8 @@ class UrlUserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         url_string = validated_data.pop('url_string')
         url_object, _ = Url.objects.get_or_create(url=url_string)
-        instance.url = url_object
-        instance.description = validated_data.pop('description')
-        instance.category_id = validated_data.pop('category')
-        instance.save()
-        return instance
+        validated_data['url'] = url_object
+        return super().update(instance, validated_data)
 
 
 class CategorySerializer(serializers.ModelSerializer):
