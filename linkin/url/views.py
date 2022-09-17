@@ -36,7 +36,7 @@ class UrlUserCreateViewSet(mixins.CreateModelMixin,
     CRUD user's urls
     """
     def get_queryset(self):
-        return UrlUser.objects.filter(user=self.request.user)
+        return UrlUser.objects.filter(user=self.request.user).order_by('-updated_at')
 
     queryset = UrlUser.objects.none()
     serializer_class = UrlUserSerializer
