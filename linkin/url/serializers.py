@@ -57,7 +57,7 @@ class UrlUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UrlUser
-        fields = ('id', 'description', 'user', 'url', 'url_string', 'username', 'category')
+        fields = ('id', 'description', 'user', 'url', 'url_string', 'username', 'category', 'public')
 
     def create(self, validated_data):
         url_string = validated_data.pop('url_string')

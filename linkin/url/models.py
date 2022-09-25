@@ -29,10 +29,13 @@ class Url(models.Model):
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
-        null=True, blank=True
+        null=True, blank=True,
+        db_index=True
     )
 
-    show_on_front = models.BooleanField(default=False)
+    hide_from_public = models.BooleanField(default=False, db_index=True)
+
+    public = models.BooleanField(default=False, db_index=True)
 
     # this field will be filled automatically
     title = models.TextField(null=True, blank=True)
@@ -71,6 +74,8 @@ class UrlUser(ModelPermissions):
         on_delete=models.SET_NULL,
         null=True, blank=True
     )
+
+    public = models.BooleanField()
 
     created_at = models.DateTimeField(auto_now_add=True)
 
