@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 
@@ -36,7 +37,19 @@ class UrlUserCreateViewSet(mixins.CreateModelMixin,
     CRUD user's urls
     """
     def get_queryset(self):
-        return UrlUser.objects.filter(user=self.request.user).order_by('-updated_at')
+        query = self.request.query_params.get('query')
+        category_search = self.request.query_params.get('category_search')
+        string = Q()
+        category = Q()
+        if query:
+            string = (Q(description__icontains=query) | Q(url__url__icontains=query))
+        if category_search:
+            category = Q(category=category_search)
+        return UrlUser.objects.\
+            filter(user=self.request.user).\
+            filter(string).\
+            filter(category).\
+            order_by('-updated_at')
 
     queryset = UrlUser.objects.none()
     serializer_class = UrlUserSerializer
