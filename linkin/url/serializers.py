@@ -7,10 +7,11 @@ from .models import Url, UrlUser, Category, MAX_URL_SIZE
 
 
 class UrlSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(read_only=True, source="category.name")
 
     class Meta:
         model = Url
-        fields = ('id', 'url', 'category')
+        fields = ('id', 'url', 'category', 'category_name')
         read_only_fields = ('id', 'category')
 
 
@@ -21,6 +22,8 @@ class UrlUserSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
+
+    url_id = serializers.StringRelatedField(read_only=True, source="url.id")
 
     url_string = serializers.CharField(write_only=True)
 
@@ -57,7 +60,8 @@ class UrlUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UrlUser
-        fields = ('id', 'description', 'user', 'url', 'url_string', 'username', 'category', 'public')
+        fields = ('id', 'description', 'user', 'url', 'url_string', 'username', 'category', 'public',
+                  'url_id')
 
     def create(self, validated_data):
         url_string = validated_data.pop('url_string')
