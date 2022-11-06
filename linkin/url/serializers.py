@@ -11,7 +11,7 @@ class UrlSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Url
-        fields = ('id', 'url', 'category', 'category_name')
+        fields = ('id', 'url', 'category', 'category_name', 'title', 'comments')
         read_only_fields = ('id', 'category')
 
 
@@ -28,6 +28,10 @@ class UrlUserSerializer(serializers.ModelSerializer):
     url_string = serializers.CharField(write_only=True)
 
     username = serializers.SerializerMethodField()
+
+    comments = serializers.StringRelatedField(read_only=True, source="url.comments")
+
+    url_title = serializers.StringRelatedField(read_only=True, source="url.title")
 
     def get_username(self, obj):
         return obj.user.username
@@ -61,7 +65,7 @@ class UrlUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UrlUser
         fields = ('id', 'description', 'user', 'url', 'url_string', 'username', 'category', 'public',
-                  'url_id')
+                  'url_id', 'comments', 'url_title')
 
     def create(self, validated_data):
         url_string = validated_data.pop('url_string')

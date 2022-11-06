@@ -1,9 +1,10 @@
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, mixins, generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 
 from linkin.url.models import Url, UrlUser, Category
 from linkin.common.permissions import IsUserOwner
@@ -17,13 +18,30 @@ class UrlViewSet(mixins.RetrieveModelMixin,
     """
     Lists and details Urls
     """
-    queryset = Url.objects.all()
+    queryset = Url.objects.none()
     serializer_class = UrlSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get_object(self):
+        return get_object_or_404(Url, pk=self.kwargs.get('pk'))
+
+    def get_queryset(self):
+        query = self.request.query_params.get('query')
+        category_search = self.request.query_params.get('category_search')
+        string = Q()
+        category = Q()
+        if query:
+            string = (Q(url__icontains=query) | Q(title__icontains=query))
+        if category_search:
+            category = Q(category=category_search)
+        return Url.objects.\
+            filter(string).\
+            filter(category).\
+            filter(public=True).\
+            order_by('-updated_at')
 
     @method_decorator(cache_page(60))
     def list(self, request, *args, **kwargs):
-        self.queryset = Url.objects.filter(public=True)
         return super().list(request, *args, **kwargs)
 
 
@@ -67,7 +85,7 @@ class CategoryViewSet(mixins.RetrieveModelMixin,
     pagination_class = None
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @method_decorator(cache_page(60*60))
     def list(self, request, *args, **kwargs):
