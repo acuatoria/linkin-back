@@ -1,55 +1,65 @@
-import uuid
-from rest_framework import viewsets, mixins
-from rest_framework.permissions import IsAuthenticated
+from django.db.models import F
+from django.core.cache import cache
 
-from django.http import Http404
+from rest_framework import viewsets, mixins
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Comment
+from linkin.url.models import Url
 from linkin.common.permissions import IsUserOwner
-from .serializers import CommentSerializer
+from .serializers import CommentSerializer, CommentCountSerializer
 
 
 class CommentViewSet(mixins.CreateModelMixin,
                      mixins.RetrieveModelMixin,
                      viewsets.GenericViewSet,
-                     mixins.UpdateModelMixin,
                      mixins.ListModelMixin,
                      mixins.DestroyModelMixin
                      ):
-    """
-    Creates comments
-    """
-    def get_queryset(self):
-        return Comment.objects.filter(user=self.request.user)
 
-    queryset = Comment.objects.none()
-    serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticated, IsUserOwner,)
+    def perform_destroy(self, instance):
+        instance.delete()
+        Url.objects.filter(id=instance.url).update(comments=F('comments')-1)
 
+    def get_object(self):
+        return Comment.get(
+            self.kwargs.get('pk'),
+            str(self.request.user.id)
+        )
 
-class CommentUrlViewSet(viewsets.GenericViewSet,
-                        mixins.ListModelMixin,
-                        mixins.RetrieveModelMixin
-                        ):
-    """
-    Get comments by url
-    """
     def retrieve(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
         object_uuid = self.kwargs.get('pk')
+        url = self.request.GET.get('url')
+        if object_uuid:
+            return list(Comment.query(object_uuid))
+        if url:
+            return [item for item in Comment.query(url, Comment.user == str(self.request.user.id))]
+        return []
 
-        if not object_uuid:
-            return Comment.objects.none()
-
-        try:
-            uuid.UUID(object_uuid)
-        except ValueError:
-            raise Http404("Invalid uuid")
-
-        return Comment.objects.filter(url=object_uuid)
-
-    queryset = Comment.objects.none()
+    queryset = []
+    # Remove pagination due to incompatibility with dynamodb query
+    pagination_class = None
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsUserOwner,)
+
+
+class CommentCountViewSet(viewsets.GenericViewSet,
+                          mixins.RetrieveModelMixin,
+                          ):
+
+    def get_object(self):
+        url = self.kwargs.get('pk')
+        cache_key = f'{url}-countc'
+        if response := cache.get(cache_key):
+            return response
+
+        response = {'comments': Url.objects.get(id=url).comments}
+        cache.set(cache_key, response, 60)
+        return response
+
+    queryset = []
+    serializer_class = CommentCountSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)

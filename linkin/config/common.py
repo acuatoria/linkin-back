@@ -192,7 +192,7 @@ class Common(Configuration):
     # Django Rest Framework
     REST_FRAMEWORK = {
         'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': int(os.getenv('DJANGO_PAGINATION_LIMIT', 100)),
+        'PAGE_SIZE': int(os.getenv('DJANGO_PAGINATION_LIMIT', 10)),
         'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S%z',
         'DEFAULT_RENDERER_CLASSES': (
             'rest_framework.renderers.JSONRenderer',
@@ -202,8 +202,8 @@ class Common(Configuration):
             'rest_framework.permissions.IsAuthenticated',
         ],
         'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.SessionAuthentication',
             'rest_framework.authentication.TokenAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
         ),
         'DEFAULT_THROTTLE_CLASSES': [
             'rest_framework.throttling.AnonRateThrottle',
@@ -220,3 +220,7 @@ class Common(Configuration):
     CORS_ORIGIN_WHITELIST = [
         os.getenv('FRONT_URL', 'http://localhost:3000')
     ]
+
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
+    COMMENTS_TABLE = os.getenv('COMMENTS_TABLE', 'comments-dev')

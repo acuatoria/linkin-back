@@ -1,3 +1,5 @@
+from email.policy import default
+from operator import index
 import uuid
 from gettext import gettext as _
 
@@ -41,6 +43,8 @@ class Url(models.Model):
     title = models.TextField(null=True, blank=True)
 
     url = models.URLField(unique=True, max_length=MAX_URL_SIZE)
+
+    comments = models.IntegerField(default=0, db_index=True)
 
     def __str__(self):
         return f'{self.url}'

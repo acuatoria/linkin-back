@@ -1,32 +1,19 @@
-import uuid
+from django.conf import settings
 
-from django.db import models
+from pynamodb.models import Model
+from pynamodb.attributes import (
+    UnicodeAttribute, UTCDateTimeAttribute
+)
 
-from linkin.common.model_permissions import ModelPermissions
 
+class Comment(Model):
+    class Meta:
+        table_name = settings.COMMENTS_TABLE
+        aws_access_key_id = settings.AWS_ACCESS_KEY_ID
+        aws_secret_access_key = settings.AWS_SECRET_ACCESS_KEY
 
-class Comment(ModelPermissions):
-
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid4,
-        editable=False
-    )
-
-    url = models.ForeignKey('url.Url', on_delete=models.CASCADE)
-
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
-
-    comment = models.TextField()
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    updated_at = models.DateTimeField(auto_now=True)
-
-    private = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f'{self.url} - {self.user}'
-
-    def is_owner(self, user):
-        return self.user == user
+    url = UnicodeAttribute(hash_key=True)
+    user = UnicodeAttribute(range_key=True)
+    user_name = UnicodeAttribute(attr_name='user_n')
+    comment = UnicodeAttribute()
+    updated_at = UTCDateTimeAttribute()

@@ -23,6 +23,7 @@ class UrlViewSet(mixins.RetrieveModelMixin,
 
     @method_decorator(cache_page(60))
     def list(self, request, *args, **kwargs):
+        self.queryset = Url.objects.filter(public=True)
         return super().list(request, *args, **kwargs)
 
 
@@ -63,10 +64,11 @@ class CategoryViewSet(mixins.RetrieveModelMixin,
     """
     Lists and details Urls
     """
+    pagination_class = None
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (IsAuthenticated,)
 
-    @method_decorator(cache_page(1))
+    @method_decorator(cache_page(60*60))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
