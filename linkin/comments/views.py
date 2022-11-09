@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Comment
 from linkin.url.models import Url
 from linkin.common.permissions import IsUserOwner
-from .serializers import CommentSerializer, CommentCountSerializer
+from .serializers import CommentSerializer
 
 
 class CommentViewSet(mixins.CreateModelMixin,
@@ -44,22 +44,3 @@ class CommentViewSet(mixins.CreateModelMixin,
     pagination_class = None
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsUserOwner,)
-
-
-class CommentCountViewSet(viewsets.GenericViewSet,
-                          mixins.RetrieveModelMixin,
-                          ):
-
-    def get_object(self):
-        url = self.kwargs.get('pk')
-        cache_key = f'{url}-countc'
-        if response := cache.get(cache_key):
-            return response
-
-        response = {'comments': Url.objects.get(id=url).comments}
-        cache.set(cache_key, response, 60)
-        return response
-
-    queryset = []
-    serializer_class = CommentCountSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)

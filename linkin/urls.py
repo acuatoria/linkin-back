@@ -7,14 +7,13 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
 
 from .users.views import UserViewSet, UserCreateViewSet
-from .comments.views import CommentViewSet, CommentCountViewSet
+from .comments.views import CommentViewSet
 from linkin.url.views import UrlViewSet, UrlUserCreateViewSet, CategoryViewSet
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'users', UserCreateViewSet)
 router.register(r'comments', CommentViewSet, basename="comments")
-router.register(r'comments-count', CommentCountViewSet, basename="comments-count")
 router.register(r'urls', UrlViewSet)
 router.register(r'url-user', UrlUserCreateViewSet)
 router.register(r'category', CategoryViewSet)

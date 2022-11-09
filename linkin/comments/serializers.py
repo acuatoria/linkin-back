@@ -49,7 +49,3 @@ class CommentSerializer(serializers.Serializer):
                 ]
             )
             return comment
-
-
-class CommentCountSerializer(serializers.Serializer):
-    comments = serializers.IntegerField()

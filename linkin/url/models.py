@@ -27,7 +27,7 @@ class Url(models.Model):
         editable=False
     )
 
-    # This field should be calculated based on categories of url user
+    # TODO This field should be calculated based on categories of url user
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
@@ -39,12 +39,16 @@ class Url(models.Model):
 
     public = models.BooleanField(default=False, db_index=True)
 
-    # this field will be filled automatically
+    # TODO this field will be filled automatically
     title = models.TextField(null=True, blank=True)
 
     url = models.URLField(unique=True, max_length=MAX_URL_SIZE)
 
     comments = models.IntegerField(default=0, db_index=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.url}'
