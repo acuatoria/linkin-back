@@ -210,8 +210,8 @@ class Common(Configuration):
             'rest_framework.throttling.UserRateThrottle'
         ],
         'DEFAULT_THROTTLE_RATES': {
-            'anon': '1/second',
-            'user': '120/minute'
+            'anon': '4/second',
+            'user': '12/second'
         }
     }
 
