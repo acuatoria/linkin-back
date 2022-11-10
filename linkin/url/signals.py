@@ -26,7 +26,7 @@ def update_public_urls(sender, instance, **kwargs):
 @receiver(post_save, sender=UrlUser)
 def update_category_urls(sender, instance, **kwargs):
     # TODO Better place for this is a periodic task
-    if public_url := Url.objects.filter(id=instance.url.id, public=True).values('urluser__category').\
-            annotate(total=Count('urluser__id')).order_by('-total').first():
-        category_most = public_url.get('urluser__category')
-        Url.objects.filter(id=instance.url.id, public=True).update(category=category_most)
+
+    category_most = Url.objects.filter(id=instance.url.id).values('urluser__category').\
+        annotate(total=Count('urluser__id')).order_by('-total').first().get('urluser__category')
+    Url.objects.filter(id=instance.url.id).update(category=category_most)
