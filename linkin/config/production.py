@@ -30,3 +30,15 @@ class Production(Common):
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
     CSRF_TRUSTED_ORIGINS = ['https://' + x for x in os.getenv('ALLOWED_HOSTS', '').split(',')]
+
+    ADMINS = [
+        (os.getenv('ADMIN_NAME', ''), os.getenv('ADMIN_EMAIL', ''))
+    ]
+
+    # CONFIGURACION MAIL GMAIL
+    # ------------------------------------------------------------------------------
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', True)
+    EMAIL_HOST = os.getenv('EMAIL_HOST', '')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+    EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
