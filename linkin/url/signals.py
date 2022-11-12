@@ -1,32 +1,20 @@
+
 from django.db.models.signals import post_save, post_delete
-from django.contrib.postgres.aggregates import BoolOr
-from django.db.models.aggregates import Count, Max
-from django.db.models.expressions import F
+
 from django.dispatch import receiver
 
-from .models import UrlUser, Url
+from .models import UrlUser
+from .tasks import clean_urls_task, update_public_urls_task, update_category_urls_task, fetch_url_info_task
 
 
 @receiver(post_delete, sender=UrlUser)
 def clean_urls(sender, instance, **kwargs):
-    # TODO Better place for this is a periodic task
-
-    Url.objects.filter(urluser__isnull=True, comments=0).delete()
+    clean_urls_task.apply_async()
 
 
 @receiver(post_save, sender=UrlUser)
-def update_public_urls(sender, instance, **kwargs):
-    # TODO Better place for this is a periodic task
-    Url.objects.filter(id=instance.url.id, public=False, urluser__public=True).\
-        update(public=True)
-    Url.objects.filter(id=instance.url.id, public=True).\
-        annotate(annotate_public=BoolOr('urluser__public')).filter(annotate_public=False).\
-        update(public=False)
-
-@receiver(post_save, sender=UrlUser)
-def update_category_urls(sender, instance, **kwargs):
-    # TODO Better place for this is a periodic task
-
-    category_most = Url.objects.filter(id=instance.url.id).values('urluser__category').\
-        annotate(total=Count('urluser__id')).order_by('-total').first().get('urluser__category')
-    Url.objects.filter(id=instance.url.id).update(category=category_most)
+def post_save_urluser(sender, instance, **kwargs):
+    if not instance.url.title:
+        fetch_url_info_task.apply_async([str(instance.url.url), ])
+    update_public_urls_task.apply_async([str(instance.url.id), ])
+    update_category_urls_task.apply_async([str(instance.url.id), ])

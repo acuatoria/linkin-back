@@ -39,4 +39,4 @@ processes = []
 
 [processes]
   app = ""
-  worker = ""
+  worker = "celery -A linkin worker -l INFO"
