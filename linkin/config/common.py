@@ -23,6 +23,8 @@ class Common(Configuration):
         'django_filters',            # for filtering rest endpoints
         'django_extensions',
         'corsheaders',
+        'celery',
+        'django_celery_results',
 
         # Your apps
         'linkin.users',
