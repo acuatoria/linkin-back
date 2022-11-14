@@ -67,7 +67,7 @@ class UrlUserCreateViewSet(mixins.CreateModelMixin,
             filter(user=self.request.user).\
             filter(string).\
             filter(category).\
-            order_by('-updated_at')
+            order_by('-created_at')
 
     queryset = UrlUser.objects.none()
     serializer_class = UrlUserSerializer

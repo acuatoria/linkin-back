@@ -45,3 +45,5 @@ class Local(Common):
     SHELL_PLUS_IMPORTS = [
         'from linkin.comments.models import Comment',
     ]
+
+    CELERY_TASK_ALWAYS_EAGER = True
