@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
-from .models import Url, UrlUser, Category, MAX_URL_SIZE
+from .models import Url, UrlUser, Category, Collection, MAX_URL_SIZE
 
 
 class UrlSerializer(serializers.ModelSerializer):
@@ -32,6 +32,8 @@ class UrlUserSerializer(serializers.ModelSerializer):
     comments = serializers.StringRelatedField(read_only=True, source="url.comments")
 
     url_title = serializers.StringRelatedField(read_only=True, source="url.title")
+
+    collection = serializers.PrimaryKeyRelatedField(many=True)
 
     def get_username(self, obj):
         return obj.user.username
@@ -65,7 +67,7 @@ class UrlUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UrlUser
         fields = ('id', 'description', 'user', 'url', 'url_string', 'username', 'category', 'public',
-                  'url_id', 'comments', 'url_title')
+                  'url_id', 'comments', 'url_title', 'collection')
 
     def create(self, validated_data):
         url_string = validated_data.pop('url_string')
@@ -89,3 +91,15 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'name')
         read_only_fields = ('id', 'name')
+
+
+class CollectionSerializer(serializers.ModelSerializer):
+
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Collection
+        fields = ('id', 'user', 'name', 'description', 'public')
+        read_only_fields = ('id', )

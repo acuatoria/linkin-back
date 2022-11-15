@@ -6,9 +6,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
-from linkin.url.models import Url, UrlUser, Category
-from linkin.common.permissions import IsUserOwner
-from linkin.url.serializers import UrlSerializer, UrlUserSerializer, CategorySerializer
+from linkin.url.models import Url, UrlUser, Category, Collection
+from linkin.common.permissions import IsUserOwner, IsUserOwnerOrPublic
+from linkin.url.serializers import UrlSerializer, UrlUserSerializer, CategorySerializer, CollectionSerializer
 
 
 class UrlViewSet(mixins.RetrieveModelMixin,
@@ -87,5 +87,21 @@ class CategoryViewSet(mixins.RetrieveModelMixin,
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     @method_decorator(cache_page(60*60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+
+class CollectionViewSet(mixins.CreateModelMixin,
+                        viewsets.GenericViewSet,
+                        mixins.RetrieveModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.DestroyModelMixin,
+                        mixins.ListModelMixin):
+
+    pagination_class = None
+    queryset = Collection.objects.all()
+    serializer_class = CollectionSerializer
+    permission_classes = (IsUserOwnerOrPublic,)
+
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)

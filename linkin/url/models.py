@@ -89,8 +89,45 @@ class UrlUser(ModelPermissions):
 
     updated_at = models.DateTimeField(auto_now=True)
 
+    collection = models.ManyToManyField(
+        'Collection',
+    )
+
     def __str__(self):
         return f'{self.url} - {self.user}'
+
+    def is_owner(self, user):
+        return self.user == user
+
+
+class Collection(ModelPermissions):
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE)
+
+    name = models.TextField(
+        blank=False, null=False,
+        verbose_name=_('Name of this collection')
+    )
+
+    description = models.TextField(
+        blank=True, null=True,
+        verbose_name=_('User description about this collection ')
+    )
+
+    public = models.BooleanField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.name} - {self.user}'
 
     def is_owner(self, user):
         return self.user == user
