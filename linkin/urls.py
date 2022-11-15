@@ -8,7 +8,9 @@ from rest_framework.authtoken import views
 
 from .users.views import UserViewSet, UserCreateViewSet
 from .comments.views import CommentViewSet
-from linkin.url.views import UrlViewSet, UrlUserCreateViewSet, CategoryViewSet, CollectionViewSet
+from linkin.url.views import (
+    UrlViewSet, UrlUserCreateViewSet, CategoryViewSet, CollectionViewSet, UrlUserMinViewSet
+)
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -18,6 +20,7 @@ router.register(r'urls', UrlViewSet)
 router.register(r'url-user', UrlUserCreateViewSet)
 router.register(r'category', CategoryViewSet)
 router.register(r'collection', CollectionViewSet)
+router.register(r'urluser-min', UrlUserMinViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

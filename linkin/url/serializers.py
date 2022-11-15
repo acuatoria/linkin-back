@@ -15,6 +15,19 @@ class UrlSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'category')
 
 
+class CollectionSerializer(serializers.ModelSerializer):
+
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
+    id = serializers.UUIDField()
+
+    class Meta:
+        model = Collection
+        fields = ('id', 'user', 'name', 'description', 'public')
+        read_only_fields = ('id', )
+
+
 class UrlUserSerializer(serializers.ModelSerializer):
 
     url = serializers.StringRelatedField(read_only=True)
@@ -33,7 +46,7 @@ class UrlUserSerializer(serializers.ModelSerializer):
 
     url_title = serializers.StringRelatedField(read_only=True, source="url.title")
 
-    collection = serializers.PrimaryKeyRelatedField(many=True)
+    collection = CollectionSerializer(many=True)
 
     def get_username(self, obj):
         return obj.user.username
@@ -72,17 +85,42 @@ class UrlUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         url_string = validated_data.pop('url_string')
         url_object, _ = Url.objects.get_or_create(url=url_string)
+        collection = validated_data.pop('collection')
         url_user, _ = UrlUser.objects.update_or_create(
             user=validated_data.get('user'),
             url=url_object,
             defaults={**validated_data})
+        url_user.collection.set(Collection.objects.filter(
+            id__in=[x.get('id') for x in collection]
+        ))
         return url_user
 
     def update(self, instance, validated_data):
         url_string = validated_data.pop('url_string')
         url_object, _ = Url.objects.get_or_create(url=url_string)
         validated_data['url'] = url_object
+        instance.collection.set(Collection.objects.filter(
+            id__in=[x.get('id') for x in validated_data.pop('collection')]
+        ))
         return super().update(instance, validated_data)
+
+
+class UrlUserMinSerializer(serializers.ModelSerializer):
+
+    url = serializers.StringRelatedField(read_only=True)
+
+    url_id = serializers.StringRelatedField(read_only=True, source="url.id")
+
+    url_string = serializers.CharField(write_only=True)
+
+    comments = serializers.StringRelatedField(read_only=True, source="url.comments")
+
+    url_title = serializers.StringRelatedField(read_only=True, source="url.title")
+
+    class Meta:
+        model = UrlUser
+        fields = ('id', 'url', 'url_string', 'category',
+                  'url_id', 'comments', 'url_title')
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -91,15 +129,3 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('id', 'name')
         read_only_fields = ('id', 'name')
-
-
-class CollectionSerializer(serializers.ModelSerializer):
-
-    user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
-
-    class Meta:
-        model = Collection
-        fields = ('id', 'user', 'name', 'description', 'public')
-        read_only_fields = ('id', )

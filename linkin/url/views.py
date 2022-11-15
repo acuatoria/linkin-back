@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.db.models.aggregates import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.shortcuts import get_object_or_404
@@ -8,7 +9,10 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 from linkin.url.models import Url, UrlUser, Category, Collection
 from linkin.common.permissions import IsUserOwner, IsUserOwnerOrPublic
-from linkin.url.serializers import UrlSerializer, UrlUserSerializer, CategorySerializer, CollectionSerializer
+from linkin.url.serializers import (
+    UrlSerializer, UrlUserSerializer, CategorySerializer, CollectionSerializer,
+    UrlUserMinSerializer
+)
 
 
 class UrlViewSet(mixins.RetrieveModelMixin,
@@ -38,7 +42,8 @@ class UrlViewSet(mixins.RetrieveModelMixin,
             filter(string).\
             filter(category).\
             filter(public=True).\
-            order_by('-updated_at')
+            annotate(popular=Count('urluser')).\
+            order_by('-popular')
 
     @method_decorator(cache_page(60))
     def list(self, request, *args, **kwargs):
@@ -105,3 +110,25 @@ class CollectionViewSet(mixins.CreateModelMixin,
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+
+class UrlUserMinViewSet(viewsets.GenericViewSet,
+                        mixins.ListModelMixin):
+
+    def get_queryset(self):
+        query = self.request.query_params.get('query')
+        category_search = self.request.query_params.get('category_search')
+        string = Q()
+        category = Q()
+        if query:
+            string = (Q(url__url__icontains=query) | Q(url__title__icontains=query))
+        if category_search:
+            category = Q(category=category_search)
+        return UrlUser.objects.\
+            filter(string).\
+            filter(category).\
+            filter(collection=self.request.query_params.get('collection'))
+
+    queryset = UrlUser.objects.all()
+    serializer_class = UrlUserMinSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly,)
