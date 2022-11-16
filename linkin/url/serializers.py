@@ -20,11 +20,19 @@ class CollectionSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
-    id = serializers.UUIDField()
 
     class Meta:
         model = Collection
         fields = ('id', 'user', 'name', 'description', 'public')
+
+
+class CollectionMinSerializer(serializers.ModelSerializer):
+
+    id = serializers.UUIDField()
+
+    class Meta:
+        model = Collection
+        fields = ('id', )
         read_only_fields = ('id', )
 
 
@@ -46,7 +54,7 @@ class UrlUserSerializer(serializers.ModelSerializer):
 
     url_title = serializers.StringRelatedField(read_only=True, source="url.title")
 
-    collection = CollectionSerializer(many=True)
+    collection = CollectionMinSerializer(many=True)
 
     def get_username(self, obj):
         return obj.user.username
