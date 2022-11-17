@@ -37,7 +37,8 @@ def update_category_urls_task(url_id):
 
 @shared_task
 def fetch_url_info_task(url):
-    response = requests.get(url)
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36'}
+    response = requests.get(url, headers=headers)
     if response.ok:
         soup = BeautifulSoup(response.text, 'html.parser')
         Url.objects.filter(url=url).update(title=soup.title.string)
