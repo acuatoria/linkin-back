@@ -103,13 +103,18 @@ class CollectionViewSet(mixins.CreateModelMixin,
                         mixins.DestroyModelMixin,
                         mixins.ListModelMixin):
 
+    def list(self, request, *args, **kwargs):
+        if self.request.user and self.request.user.is_authenticated:
+            self.queryset = Collection.objects.\
+                filter(user=self.request.user)
+        else:
+            self.queryset = Collection.objects.none()
+        return super().list(request, *args, **kwargs)
+
     pagination_class = None
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
     permission_classes = (IsUserOwnerOrPublic,)
-
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
 
 
 class UrlUserMinViewSet(viewsets.GenericViewSet,
