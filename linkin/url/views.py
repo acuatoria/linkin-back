@@ -1,3 +1,5 @@
+import uuid
+
 from django.db.models import Q
 from django.db.models.aggregates import Count
 from django.utils.decorators import method_decorator
@@ -62,16 +64,22 @@ class UrlUserCreateViewSet(mixins.CreateModelMixin,
     def get_queryset(self):
         query = self.request.query_params.get('query')
         category_search = self.request.query_params.get('category_search')
+        collection_search = self.request.query_params.get('collection')
         string = Q()
         category = Q()
+        collection = Q()
+
         if query:
             string = (Q(description__icontains=query) | Q(url__url__icontains=query))
         if category_search:
             category = Q(category=category_search)
+        if collection_search:
+            collection = Q(collection=uuid.UUID(collection_search))
         return UrlUser.objects.\
             filter(user=self.request.user).\
             filter(string).\
             filter(category).\
+            filter(collection).\
             order_by('-created_at')
 
     queryset = UrlUser.objects.none()
