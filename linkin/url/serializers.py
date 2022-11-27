@@ -123,12 +123,12 @@ class UrlUserMinSerializer(serializers.ModelSerializer):
 
     comments = serializers.StringRelatedField(read_only=True, source="url.comments")
 
-    title = serializers.StringRelatedField(read_only=True, source="url.title")
+    url_title = serializers.StringRelatedField(read_only=True, source="url.title")
 
     class Meta:
         model = UrlUser
         fields = ('id', 'url', 'url_string', 'category',
-                  'url_id', 'comments', 'title')
+                  'url_id', 'comments', 'url_title')
 
 
 class CategorySerializer(serializers.ModelSerializer):

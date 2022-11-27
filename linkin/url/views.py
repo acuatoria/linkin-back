@@ -132,7 +132,8 @@ class UrlUserMinViewSet(viewsets.GenericViewSet,
         return UrlUser.objects.\
             filter(string).\
             filter(category).\
-            filter(collection=self.request.query_params.get('collection'))
+            filter(collection=self.request.query_params.get('collection')).\
+            order_by('-created_at')
 
     queryset = UrlUser.objects.all()
     serializer_class = UrlUserMinSerializer
