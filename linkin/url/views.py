@@ -45,7 +45,7 @@ class UrlViewSet(mixins.RetrieveModelMixin,
             filter(category).\
             filter(public=True).\
             annotate(popular=Count('urluser')).\
-            order_by('-popular')
+            order_by('-popular', '-created_at')
 
     @method_decorator(cache_page(60))
     def list(self, request, *args, **kwargs):

@@ -38,5 +38,5 @@ processes = []
     timeout = "2s"
 
 [processes]
-  app = ""
+  app = "newrelic-admin run-program gunicorn --bind 0.0.0.0:8080 --access-logfile - linkin.wsgi:application"
   worker = "celery -A linkin worker -l INFO"
