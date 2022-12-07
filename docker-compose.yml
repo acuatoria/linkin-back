@@ -7,9 +7,11 @@ services:
       - DJANGO_SECRET_KEY=local
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - DRF_RECAPTCHA_SECRET_KEY=${DRF_RECAPTCHA_SECRET_KEY}
     build: ./
     command: >
       bash -c "python wait_for_postgres.py &&
+               pip install -r requirements.txt &&
                ./manage.py migrate &&
                ./manage.py runserver 0.0.0.0:8000"
     volumes:

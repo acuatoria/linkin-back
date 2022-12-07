@@ -25,6 +25,7 @@ class Common(Configuration):
         'corsheaders',
         'celery',
         'django_celery_results',
+        'drf_recaptcha',
 
         # Your apps
         'linkin.users',

@@ -51,3 +51,5 @@ class Production(Common):
 
     CELERY_RESULT_BACKEND = 'django-db'
     CELERY_CACHE_BACKEND = 'django-cache'
+
+    DRF_RECAPTCHA_SECRET_KEY = os.getenv('DRF_RECAPTCHA_SECRET_KEY', '')
