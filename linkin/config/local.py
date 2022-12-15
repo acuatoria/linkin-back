@@ -49,3 +49,4 @@ class Local(Common):
     CELERY_TASK_ALWAYS_EAGER = True
 
     DRF_RECAPTCHA_SECRET_KEY = os.getenv('DRF_RECAPTCHA_SECRET_KEY', '')
+    DRF_RECAPTCHA_TESTING = True
