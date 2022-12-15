@@ -5,7 +5,7 @@ from .models import Category, Url, UrlUser
 
 @admin.register(Url)
 class UrlAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('-id', )
 
 
 @admin.register(UrlUser)
