@@ -5,7 +5,6 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
-    ordering = ('-id', )
     list_display = ['username', 'get_url_count']
 
     def get_url_count(self, obj):

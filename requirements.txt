@@ -52,3 +52,4 @@ beautifulsoup4==4.11.1
 
 # drf-recaptcha==2.2.2
 git+https://github.com/acuatoria/drf-recaptcha.git#egg=drf-recaptcha
+git+https://github.com/acuatoria/drf-reset-password.git#egg=drf-reset-password

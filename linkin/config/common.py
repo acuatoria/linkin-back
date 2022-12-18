@@ -26,6 +26,7 @@ class Common(Configuration):
         'celery',
         'django_celery_results',
         'drf_recaptcha',
+        'reset_password',
 
         # Your apps
         'linkin.users',
@@ -82,7 +83,7 @@ class Common(Configuration):
     # https://docs.djangoproject.com/en/2.0/howto/static-files/
     # STATIC_ROOT = os.path.normpath(join(os.path.dirname(BASE_DIR), 'static'))
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_DIRS = []
+    STATICFILES_DIRS = [f'{BASE_DIR}/templates']
     STATIC_URL = '/static/'
     STATICFILES_FINDERS = (
         'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -210,11 +211,13 @@ class Common(Configuration):
         ),
         'DEFAULT_THROTTLE_CLASSES': [
             'rest_framework.throttling.AnonRateThrottle',
-            'rest_framework.throttling.UserRateThrottle'
+            'rest_framework.throttling.UserRateThrottle',
+            'rest_framework.throttling.ScopedRateThrottle'
         ],
         'DEFAULT_THROTTLE_RATES': {
             'anon': '4/second',
-            'user': '12/second'
+            'user': '12/second',
+            'reset_passwords': '10/hour'
         }
     }
 
@@ -227,3 +230,23 @@ class Common(Configuration):
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
     COMMENTS_TABLE = os.getenv('COMMENTS_TABLE', 'comments-dev')
+
+    DRF_RESET_EMAIL = {
+        'RESET_PASSWORD_EMAIL_TITLE': 'Reset Password',
+        'RESET_PASSWORD_EMAIL_TEMPLATE': 'email_reset_password.html',
+        'EMAIL_EXPIRATION_TIME': 24,
+        'REDIRECT_LINK': os.getenv('FRONT_URL', 'http://localhost:3000'),
+        'APP_NAME': os.getenv('APP_NAME', ''),
+        'EMAIL_PROVIDER': 'linkin.users.services.PasswordReset',
+        'CONTENT_PROVIDER': 'reset_password.models.DefaultContentProvider',
+        'EMAIL_FIELD': 'email',
+        'CUSTOM_PASSWORD_SET': False,
+    }
+
+    EMAIL_HOST = os.getenv('EMAIL_HOST', '')
+    EMAIL_PORT = os.getenv('EMAIL_PORT', '')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', '')
+    EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', '')
+    EMAIL_TIMEOUT = os.getenv('EMAIL_TIMEOUT', 10)

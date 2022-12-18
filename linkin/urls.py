@@ -1,16 +1,21 @@
+
 from django.conf import settings
 from django.urls import path, re_path, include, reverse_lazy
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic.base import RedirectView
+
 from rest_framework.routers import DefaultRouter
 from rest_framework.authtoken import views
+from reset_password.views import ResetPasswordView
+
 
 from .users.views import UserViewSet, UserCreateViewSet
 from .comments.views import CommentViewSet
 from linkin.url.views import (
     UrlViewSet, UrlUserCreateViewSet, CategoryViewSet, CollectionViewSet, UrlUserMinViewSet
 )
+
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -21,6 +26,7 @@ router.register(r'url-user', UrlUserCreateViewSet, basename="url-user")
 router.register(r'category', CategoryViewSet)
 router.register(r'collection', CollectionViewSet)
 router.register(r'urluser-min', UrlUserMinViewSet)
+router.register(r'reset-password', ResetPasswordView, basename="reset_password")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
