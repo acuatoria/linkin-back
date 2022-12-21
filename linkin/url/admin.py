@@ -5,12 +5,14 @@ from .models import Category, Url, UrlUser
 
 @admin.register(Url)
 class UrlAdmin(admin.ModelAdmin):
-    ordering = ('-id', )
+    ordering = ('-created_at', )
+    list_display = ('created_at', 'url')
 
 
 @admin.register(UrlUser)
 class UrlUserAdmin(admin.ModelAdmin):
-    pass
+    ordering = ('-created_at', )
+    list_display = ('created_at', 'url')
 
 
 @admin.register(Category)
