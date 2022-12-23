@@ -1,5 +1,7 @@
 import uuid
 
+import requests
+from bs4 import BeautifulSoup
 from celery import shared_task
 from urltitle import URLTitleReader
 
@@ -36,5 +38,16 @@ def update_category_urls_task(url_id):
 
 @shared_task
 def fetch_url_info_task(url):
-    reader = URLTitleReader(verify_ssl=True)
-    Url.objects.filter(url=url).update(title=reader.title(url))
+    title = ''
+
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36'}
+    response = requests.get(url, headers=headers)
+    if response.ok:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        title = soup.title.string
+
+    if title:
+        Url.objects.filter(url=url).update(title=soup.title.string)
+    else:
+        reader = URLTitleReader(verify_ssl=True)
+        Url.objects.filter(url=url).update(title=reader.title(url))
