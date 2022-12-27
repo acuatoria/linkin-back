@@ -3,8 +3,8 @@ import uuid
 import requests
 from bs4 import BeautifulSoup
 from celery import shared_task
-from urltitle import URLTitleReader
 
+from django.conf import settings
 from django.db.models.aggregates import Count
 from django.contrib.postgres.aggregates import BoolOr
 
@@ -49,5 +49,9 @@ def fetch_url_info_task(url):
     if title:
         Url.objects.filter(url=url).update(title=soup.title.string)
     else:
-        reader = URLTitleReader(verify_ssl=True)
-        Url.objects.filter(url=url).update(title=reader.title(url))
+        query_url = f'https://www.googleapis.com/customsearch/v1?key={settings.GOOGLE_API_KEY}\
+            &cx={settings.GOOGLE_SEARCH_ENGINE_ID}&q={url}&num=1'
+        response = requests.request("GET", query_url)
+        if not response.json().get('items'):
+            return None
+        Url.objects.filter(url=url).update(title=response.json().get('items')[0].get('title'))

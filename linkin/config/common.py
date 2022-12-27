@@ -250,3 +250,6 @@ class Common(Configuration):
     EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', '')
     EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', '')
     EMAIL_TIMEOUT = os.getenv('EMAIL_TIMEOUT', 10)
+
+    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
+    GOOGLE_SEARCH_ENGINE_ID = os.getenv('GOOGLE_SEARCH_ENGINE_ID', '')
