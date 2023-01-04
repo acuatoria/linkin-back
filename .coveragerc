@@ -1,7 +1,6 @@
 [run]
 branch = True
 omit = *migrations*,
-       *urls*,
        *test*,
        *admin*,
        *models.py,
@@ -12,7 +11,6 @@ omit = *migrations*,
 
 [report]
 omit = *migrations*,
-       *urls*,
        *test*,
        *admin*,
        *models.py,

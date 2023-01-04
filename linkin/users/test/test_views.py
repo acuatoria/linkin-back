@@ -15,7 +15,6 @@ class TestUserListTestCase(APITestCase):
     """
     Tests /users list operations.
     """
-
     def setUp(self):
         self.url = reverse('user-list')
         self.user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
