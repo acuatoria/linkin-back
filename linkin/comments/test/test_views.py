@@ -30,10 +30,9 @@ class TestCommentViewSetDetail(APITestCase):
         
         url = UrlFactory.build()
         url.save()
+
         self.comment = {'url':url.id, 'user':self.user.id, 'user_name':self.user.username, 'comment':fake.city(), 'action': 'add'}
         self.url = reverse('comments-list')
-
-        
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
@@ -41,5 +40,4 @@ class TestCommentViewSetDetail(APITestCase):
 
     def test_post_request_with_valid_data_succeeds(self):
         response = self.client.post(self.url, self.comment)
-        import ipdb;ipdb.set_trace()
         eq_(response.status_code, status.HTTP_201_CREATED)
