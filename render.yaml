@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: mysite
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn mysite.wsgi:application"
+    envVars:
+      - key: WEB_CONCURRENCY
+        value: 4
