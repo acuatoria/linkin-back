@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: Linkin-back
-    env: python
-    buildCommand: "./build.sh"
-    startCommand: "gunicorn linkin.wsgi:application"
