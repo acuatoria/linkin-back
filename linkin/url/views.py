@@ -44,6 +44,7 @@ class UrlViewSet(mixins.RetrieveModelMixin,
             filter(string).\
             filter(category).\
             filter(public=True).\
+            exclude(hide_from_public=True).\
             annotate(popular=Count('urluser')).\
             order_by('-popular', '-created_at')
 

@@ -14,7 +14,6 @@ def clean_urls(sender, instance, **kwargs):
 
 @receiver(post_save, sender=UrlUser)
 def post_save_urluser(sender, instance, **kwargs):
-    if not instance.url.title:
-        fetch_url_info_task.apply_async([str(instance.url.url), ])
+    fetch_url_info_task.apply_async([str(instance.url.url), ])
     update_public_urls_task.apply_async([str(instance.url.id), ])
     update_category_urls_task.apply_async([str(instance.url.id), ])
