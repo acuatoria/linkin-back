@@ -40,3 +40,4 @@ processes = []
 [processes]
   # app = "gunicorn --bind 0.0.0.0:8080 --access-logfile - linkin.wsgi:application"
   worker = "celery -A linkin worker -l INFO"
+  # When deploy worker to fly.io enter the ssh console and do curl --ipv4 ifconfig.co , that ip whitelist in render redis
