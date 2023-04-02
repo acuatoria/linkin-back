@@ -42,5 +42,4 @@ class TestCommentSerializer(TestCase):
         request = self.client.request()
         request.user = self.comment.user
         url = self.comment.url
-        user = self.comment.user
         eq_(self.comment.url, url)
