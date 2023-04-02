@@ -1,10 +1,13 @@
-from django.urls import reverse
-from django.contrib.auth.hashers import check_password
+import factory
 from nose.tools import ok_, eq_
 from rest_framework.test import APITestCase
 from rest_framework import status
 from faker import Faker
-import factory
+
+from django.urls import reverse
+from django.contrib.auth.hashers import check_password
+from django.forms.models import model_to_dict
+
 from ..models import User
 from .factories import UserFactory
 
@@ -55,3 +58,23 @@ class TestUserDetailTestCase(APITestCase):
 
         user = User.objects.get(pk=self.user.id)
         eq_(user.first_name, new_first_name)
+
+
+class TestUserLogin(APITestCase):
+    """
+    Test user login
+    """
+
+    def setUp(self) -> None:
+        self.user = UserFactory()
+        self.url = reverse('rest_framework:login')
+        self.client.credentials(HTTP_AUTHORIZATION=f'Token {self.user.auth_token}')
+
+    def test_login(self):
+        response = self.client.post(self.url, {'username':self.user.username, 'password': self.user.password})
+        eq_(response.status_code, status.HTTP_200_OK)
+
+    def test_logout(self):
+        self.url = reverse('rest_framework:logout')
+        response = self.client.get(self.url)
+        eq_(response.status_code, status.HTTP_200_OK)

@@ -1,24 +1,22 @@
-# from nose.tools import eq_, ok_
+from nose.tools import eq_, ok_
 
-# from django.test import TestCase
-# from django.forms.models import model_to_dict
+from django.test import TestCase
 
-# from .factories import CommentFactory
-# from ..models import Comment
+from .factories import CommentFactory
+from ..models import Comment
 
 
-# class TestCommentModel(TestCase):
+class TestCommentModel(TestCase):
+    comment_data = CommentFactory()
 
-#     def setUp(self):
-#         self.comment = CommentFactory.build()
-#         self.comment_data = model_to_dict(self.comment)
-
-#     def test_comment_create(self):
-#         self.comment_data['url'] = self.comment.url
-#         self.comment_data['user'] = self.comment.user
-
-#         instance = Comment(**self.comment_data)
-#         ok_(instance.id)
-#         eq_(instance.comment, self.comment_data.get('comment'))
-
-#         ok_(instance.is_owner(self.comment.user))
+    def test_comment_create(self):
+        comment = Comment(**self.comment_data)
+        comment.save()
+        ok_(comment)
+        
+    def test_comment_delete(self):
+        comment = Comment.get(
+            self.comment_data.get('url'),
+            self.comment_data.get('user')
+        )
+        ok_(comment.delete())
