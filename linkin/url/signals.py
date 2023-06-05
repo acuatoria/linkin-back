@@ -15,8 +15,11 @@ def clean_urls(sender, instance, **kwargs):
 @receiver(post_save, sender=Url)
 def post_save_url(sender, instance, **kwargs):
     fetch_url_info_task.apply_async([str(instance.url), ])
-    update_public_urls_task.apply_async([str(instance.id), ])
-    update_category_urls_task.apply_async([str(instance.id), ])
+
+@receiver(post_save, sender=UrlUser)
+def post_save_url(sender, instance, **kwargs):
+    update_public_urls_task.apply_async([str(instance.url.id), ])
+    update_category_urls_task.apply_async([str(instance.url.id), ])
 
 def cors_allow_api_to_everyone(sender, request, **kwargs):
     return request.path.startswith("/api/v1/urls") and request.method == 'POST'

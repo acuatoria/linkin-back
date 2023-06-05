@@ -20,11 +20,8 @@ def clean_urls_task():
 @shared_task
 def update_public_urls_task(url_id):
     url_id = uuid.UUID(url_id)
-    Url.objects.filter(id=url_id, public=False, urluser__public=True).\
-        update(public=True)
-    Url.objects.filter(id=url_id, public=True).\
-        annotate(annotate_public=BoolOr('urluser__public')).filter(annotate_public=False).\
-        update(public=False)
+    Url.objects.filter(id=url_id).update(public=False)
+    Url.objects.filter(id=url_id, urluser__public=True).update(public=True)
 
 
 @shared_task
