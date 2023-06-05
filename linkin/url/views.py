@@ -7,7 +7,8 @@ from django.views.decorators.cache import cache_page
 from django.shortcuts import get_object_or_404
 
 from rest_framework import viewsets, mixins
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 from linkin.url.models import Url, UrlUser, Category, Collection
 from linkin.common.permissions import IsUserOwner, IsUserOwnerOrPublic
@@ -18,6 +19,7 @@ from linkin.url.serializers import (
 
 
 class UrlViewSet(mixins.RetrieveModelMixin,
+                 mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  viewsets.GenericViewSet,
                  ):
@@ -26,7 +28,15 @@ class UrlViewSet(mixins.RetrieveModelMixin,
     """
     queryset = Url.objects.none()
     serializer_class = UrlSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (AllowAny,)
+
+    def create(self, request, *args, **kwargs):
+        if request.POST.get('url'):
+            url = Url.objects.filter(url=request.POST.get('url')).first()
+            if url:
+                serializer = self.get_serializer(url)
+                return Response(serializer.data)
+        return super().create(request, *args, **kwargs)
 
     def get_object(self):
         return get_object_or_404(Url, pk=self.kwargs.get('pk'))

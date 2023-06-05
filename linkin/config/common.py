@@ -223,7 +223,7 @@ class Common(Configuration):
 
     DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-    CORS_ORIGIN_WHITELIST = [
+    CORS_ALLOWED_ORIGINS = [
         os.getenv('FRONT_URL', 'http://localhost:3000')
     ]
 
