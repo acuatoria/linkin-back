@@ -226,6 +226,7 @@ class Common(Configuration):
     CORS_ALLOWED_ORIGINS = [
         os.getenv('FRONT_URL', 'http://localhost:3000')
     ]
+    CORS_URLS_REGEX = r"^/api/v1/urls.*$"
 
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
