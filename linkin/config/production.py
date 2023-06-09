@@ -27,7 +27,7 @@ class Production(Common):
     }
     SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
-    CSRF_TRUSTED_ORIGINS = ['https://' + x for x in os.getenv('ALLOWED_HOSTS', '').split(',')]
+    CSRF_TRUSTED_ORIGINS = [x for x in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')]
 
     ADMINS = [
         (os.getenv('ADMIN_NAME', ''), os.getenv('ADMIN_EMAIL', ''))
