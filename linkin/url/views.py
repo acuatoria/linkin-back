@@ -5,6 +5,7 @@ from django.db.models.aggregates import Count
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import viewsets, mixins
 from rest_framework.response import Response
@@ -30,6 +31,7 @@ class UrlViewSet(mixins.RetrieveModelMixin,
     serializer_class = UrlSerializer
     permission_classes = (AllowAny,)
 
+    @csrf_exempt
     def create(self, request, *args, **kwargs):
         if request.POST.get('url'):
             url = Url.objects.filter(url=request.POST.get('url')).first()
