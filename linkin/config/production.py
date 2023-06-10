@@ -27,6 +27,8 @@ class Production(Common):
         (os.getenv('ADMIN_NAME', ''), os.getenv('ADMIN_EMAIL', ''))
     ]
 
+    CSRF_TRUSTED_ORIGINS = [x for x in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')]
+
     CELERY_BROKER_URL = os.getenv('REDIS_URL')
     CELERY_RESULT_BACKEND = os.getenv('REDIS_URL')
     CELERY_ACCEPT_CONTENT = ['application/json']
