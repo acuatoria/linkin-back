@@ -151,9 +151,7 @@ class UrlUserMinViewSet(viewsets.GenericViewSet,
     permission_classes = (IsUserOwnerOrPublic,)
 
 
-class UrlPublicViewSet(mixins.RetrieveModelMixin,
-                 mixins.CreateModelMixin,
-                 mixins.ListModelMixin,
+class UrlPublicViewSet(mixins.CreateModelMixin,
                  viewsets.GenericViewSet,
                  ):
     """
@@ -164,7 +162,10 @@ class UrlPublicViewSet(mixins.RetrieveModelMixin,
     serializer_class = UrlSerializer
     permission_classes = (AllowAny,)
 
-    @csrf_exempt
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def create(self, request, *args, **kwargs):
         if request.POST.get('url'):
             url = Url.objects.filter(url=request.POST.get('url')).first()
