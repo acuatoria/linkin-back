@@ -223,12 +223,7 @@ class Common(Configuration):
 
     DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-    if os.getenv('FRONT_URL', 'http://localhost:3000') == '*':
-        CORS_ALLOW_ALL_ORIGINS = True
-    else:
-        CORS_ALLOWED_ORIGINS = [
-            os.getenv('FRONT_URL', 'http://localhost:3000')
-        ]
+    CORS_ALLOW_ALL_ORIGINS = True
 
     AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')

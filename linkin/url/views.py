@@ -20,7 +20,6 @@ from linkin.url.serializers import (
 
 
 class UrlViewSet(mixins.RetrieveModelMixin,
-                 mixins.CreateModelMixin,
                  mixins.ListModelMixin,
                  viewsets.GenericViewSet,
                  ):
@@ -30,15 +29,6 @@ class UrlViewSet(mixins.RetrieveModelMixin,
     queryset = Url.objects.none()
     serializer_class = UrlSerializer
     permission_classes = (AllowAny,)
-
-    @csrf_exempt
-    def create(self, request, *args, **kwargs):
-        if request.POST.get('url'):
-            url = Url.objects.filter(url=request.POST.get('url')).first()
-            if url:
-                serializer = self.get_serializer(url)
-                return Response(serializer.data)
-        return super().create(request, *args, **kwargs)
 
     def get_object(self):
         return get_object_or_404(Url, pk=self.kwargs.get('pk'))
@@ -159,3 +149,26 @@ class UrlUserMinViewSet(viewsets.GenericViewSet,
     queryset = UrlUser.objects.all()
     serializer_class = UrlUserMinSerializer
     permission_classes = (IsUserOwnerOrPublic,)
+
+
+class UrlPublicViewSet(mixins.RetrieveModelMixin,
+                 mixins.CreateModelMixin,
+                 mixins.ListModelMixin,
+                 viewsets.GenericViewSet,
+                 ):
+    """
+    For public create url, for the chrome addon
+    """
+
+    queryset = Url.objects.none()
+    serializer_class = UrlSerializer
+    permission_classes = (AllowAny,)
+
+    @csrf_exempt
+    def create(self, request, *args, **kwargs):
+        if request.POST.get('url'):
+            url = Url.objects.filter(url=request.POST.get('url')).first()
+            if url:
+                serializer = self.get_serializer(url)
+                return Response(serializer.data)
+        return super().create(request, *args, **kwargs)
