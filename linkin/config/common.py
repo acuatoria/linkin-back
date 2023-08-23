@@ -9,6 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 class Common(Configuration):
 
     INSTALLED_APPS = (
+        'scout_apm.django',
         'django.contrib.admin',
         'django.contrib.auth',
         'django.contrib.contenttypes',
@@ -251,3 +252,8 @@ class Common(Configuration):
 
     GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
     GOOGLE_SEARCH_ENGINE_ID = os.getenv('GOOGLE_SEARCH_ENGINE_ID', '')
+
+    # Scout settings
+    SCOUT_MONITOR = os.getenv('SCOUT_MONITOR', '')
+    SCOUT_KEY = os.getenv('SCOUT_KEY', '')
+    SCOUT_NAME = os.getenv('APP_NAME', '')
