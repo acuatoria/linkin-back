@@ -83,6 +83,8 @@ class UrlUserCreateViewSet(mixins.CreateModelMixin,
             filter(string).\
             filter(category).\
             filter(collection).\
+            select_related('url', 'user').\
+            prefetch_related('collection').\
             order_by('-created_at')
 
     queryset = UrlUser.objects.none()
