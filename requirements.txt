@@ -54,3 +54,5 @@ git+https://github.com/acuatoria/drf-recaptcha.git#egg=drf-recaptcha
 git+https://github.com/acuatoria/drf-reset-password.git#egg=drf-reset-password
 
 scout-apm==2.26.1
+
+sentry-sdk==1.32.0
