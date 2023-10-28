@@ -1,6 +1,5 @@
 from django.urls import reverse
 
-from nose.tools import ok_, eq_
 from rest_framework.test import APITestCase
 from rest_framework import status
 from faker import Faker
@@ -36,8 +35,8 @@ class TestCommentViewSetDetail(APITestCase):
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
-        eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_request_with_valid_data_succeeds(self):
         response = self.client.post(self.url, self.comment)
-        eq_(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)

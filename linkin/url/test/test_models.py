@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from faker import Faker
 
-from .factories import UrlUserFactory, UrlFactory
+from .factories import UrlFactory
 from linkin.users.test.factories import UserFactory
 from linkin.url.models import UrlUser
 

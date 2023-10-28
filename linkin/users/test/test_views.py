@@ -1,5 +1,4 @@
 import factory
-from nose.tools import ok_, eq_
 from rest_framework.test import APITestCase
 from rest_framework import status
 from faker import Faker
@@ -25,15 +24,15 @@ class TestUserListTestCase(APITestCase):
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
-        eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_request_with_valid_data_succeeds(self):
         response = self.client.post(self.url, self.user_data)
-        eq_(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
 
         user = User.objects.get(pk=response.data.get('id'))
-        eq_(user.username, self.user_data.get('username'))
-        ok_(check_password(self.user_data.get('password'), user.password))
+        self.assertEquals(user.username, self.user_data.get('username'))
+        self.assertTrue(check_password(self.user_data.get('password'), user.password))
 
 
 class TestUserDetailTestCase(APITestCase):
@@ -48,16 +47,16 @@ class TestUserDetailTestCase(APITestCase):
 
     def test_get_request_returns_a_given_user(self):
         response = self.client.get(self.url)
-        eq_(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_put_request_updates_a_user(self):
         new_first_name = fake.first_name()
         payload = {'first_name': new_first_name}
         response = self.client.put(self.url, payload)
-        eq_(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
 
         user = User.objects.get(pk=self.user.id)
-        eq_(user.first_name, new_first_name)
+        self.assertEquals(user.first_name, new_first_name)
 
 
 class TestUserLogin(APITestCase):
@@ -72,9 +71,9 @@ class TestUserLogin(APITestCase):
 
     def test_login(self):
         response = self.client.post(self.url, {'username':self.user.username, 'password': self.user.password})
-        eq_(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
 
     def test_logout(self):
         self.url = reverse('rest_framework:logout')
         response = self.client.get(self.url)
-        eq_(response.status_code, status.HTTP_200_OK)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)

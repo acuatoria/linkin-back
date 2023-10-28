@@ -2,7 +2,6 @@ from faker import Faker
 
 from django.test import TestCase
 
-from nose.tools import eq_, ok_
 from ..serializers import CommentSerializer
 from linkin.url.test.factories import UrlFactory
 from linkin.users.test.factories import UserFactory
@@ -26,7 +25,7 @@ class TestCommentSerializer(TestCase):
         request.action = 'add'
         serializer = CommentSerializer(data={}, context={
             'request': request})
-        eq_(serializer.is_valid(), False)
+        self.assertEquals(serializer.is_valid(), False)
 
     def test_serializer_with_valid_data(self):
         request = self.client.request()
@@ -35,11 +34,11 @@ class TestCommentSerializer(TestCase):
         serializer = CommentSerializer(data=self.comment_data, context={
             'request': request}
         )
-        ok_(serializer.is_valid())
-        eq_(self.comment.comment, serializer.data.get('comment'))
+        self.assertTrue(serializer.is_valid())
+        self.assertEquals(self.comment.comment, serializer.data.get('comment'))
 
     def test_serializer_data(self):
         request = self.client.request()
         request.user = self.comment.user
         url = self.comment.url
-        eq_(self.comment.url, url)
+        self.assertEquals(self.comment.url, url)
