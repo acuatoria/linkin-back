@@ -1,43 +1,30 @@
-# fly.toml file generated for linkinback on 2022-08-26T11:37:22+02:00
+# fly.toml app configuration file generated for linkinback-worker on 2024-02-17T08:57:54+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "linkinback"
-kill_signal = "SIGINT"
-kill_timeout = 5
-processes = []
+app = 'linkinback-worker'
+primary_region = 'ord'
+console_command = '/code/manage.py shell'
+
+[build]
 
 [env]
-
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
-  private_network = true
-
-[[services]]
-  http_checks = []
-  internal_port = 8080
-  processes = ["worker"]
-  protocol = "tcp"
-  script_checks = []
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-    type = "connections"
-
-  [[services.ports]]
-    handlers = ["http"]
-    port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
-
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "10s"
-    restart_limit = 0
-    timeout = "2s"
+  PORT = '8000'
 
 [processes]
-  # app = "gunicorn --bind 0.0.0.0:8080 --access-logfile - linkin.wsgi:application"
-  worker = "celery -A linkin worker -l INFO"
-  # When deploy worker to fly.io enter the ssh console and do curl --ipv4 ifconfig.co , that ip whitelist in render redis
+  worker = 'celery -A linkin worker -l INFO'
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['worker']
+
+[[vm]]
+  size = 'shared-cpu-1x'
+
+[[statics]]
+  guest_path = '/code/static'
+  url_prefix = '/static/'

@@ -1,16 +1,28 @@
-FROM python:3.11
+ARG PYTHON_VERSION=3.11-slim-bullseye
+
+FROM python:${PYTHON_VERSION}
+
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Allows docker to cache installed dependencies between builds
-COPY ./requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# install psycopg2 dependencies.
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Adds our application code to the image
-COPY . code
-WORKDIR code
+RUN mkdir -p /code
+
+WORKDIR /code
+
+COPY requirements.txt /tmp/requirements.txt
+RUN set -ex && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    rm -rf /root/.cache/
+COPY . /code
 
 EXPOSE 8000
-# EXPOSE 8002
 
-# Run the production server
-CMD newrelic-admin run-program gunicorn --bind 0.0.0.0:8080 --access-logfile - linkin.wsgi:application
+CMD ["gunicorn", "--bind", ":8000", "--workers", "2", "linkin.wsgi"]
