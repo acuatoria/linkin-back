@@ -13,6 +13,7 @@ class UrlAdmin(admin.ModelAdmin):
 class UrlUserAdmin(admin.ModelAdmin):
     ordering = ('-created_at', )
     list_display = ('created_at', 'url')
+    exclude = ('collection',)
 
 
 @admin.register(Category)

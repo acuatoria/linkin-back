@@ -257,3 +257,5 @@ class Common(Configuration):
     SCOUT_MONITOR = os.getenv('SCOUT_MONITOR', '')
     SCOUT_KEY = os.getenv('SCOUT_KEY', '')
     SCOUT_NAME = os.getenv('APP_NAME', '')
+
+    CELERY_ALWAYS_EAGER = os.getenv('CELERY_ALWAYS_EAGER', False)

@@ -16,3 +16,17 @@ Start the dev server for local development:
 ```bash
 docker-compose up
 ```
+
+# Testing
+
+In the container, run the tests:
+```bash
+python manage.py test linkin
+```
+
+# Get the ip of the worker
+    
+```bash
+fly ssh console
+curl --ipv4 ifconfig.co
+```
